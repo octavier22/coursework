@@ -1,20 +1,39 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // Dark Mode Toggle
+
+    // Dynamic Greeting Based on Time of Day
+    const greetingElement = document.getElementById("greeting");
+    const now = new Date();
+    const hour = now.getHours();
+    let greeting = "Hello";
+
+    if (hour < 12) {
+        greeting = "Good morning";
+    } else if (hour < 18) {
+        greeting = "Good afternoon";
+    } else {
+        greeting = "Good evening";
+    }
+
+    if (greetingElement) {
+        greetingElement.textContent = greeting;
+    }
+
+    // 🌓 Dark Mode Toggle
     const toggleThemeButton = document.getElementById("toggle-theme");
     toggleThemeButton.addEventListener("click", function () {
         document.body.classList.toggle("dark-mode");
         toggleThemeButton.textContent = document.body.classList.contains("dark-mode") ? "Light Mode" : "Dark Mode";
     });
 
-    // Navigation Links & Check My Work Button
+    // Navigation and Smooth Section Switching
     const navLinks = document.querySelectorAll("nav a[data-target]");
     const sections = document.querySelectorAll(".section");
 
     function showSection(targetId) {
-        sections.forEach(section => section.classList.remove("active")); // Hide all sections
+        sections.forEach(section => section.classList.remove("active"));
         const targetSection = document.getElementById(targetId);
         if (targetSection) {
-            targetSection.classList.add("active"); // Show selected section
+            targetSection.classList.add("active");
         }
     }
 
@@ -23,42 +42,37 @@ document.addEventListener("DOMContentLoaded", function () {
             event.preventDefault();
             const targetId = link.getAttribute("data-target");
             showSection(targetId);
-            history.pushState(null, "", `#${targetId}`); // Update URL without reloading
+            history.pushState(null, "", `#${targetId}`);
         });
     });
 
-    // Handle back/forward navigation
+    // ⏪ Handle browser back/forward navigation
     window.addEventListener("popstate", function () {
         const targetId = location.hash.substring(1) || "home";
         showSection(targetId);
     });
 
-    // Set Home as Default Page
+    // Show home by default on page load
     const initialSection = location.hash.substring(1) || "home";
     showSection(initialSection);
 });
 
-// Show only the clicked section
+// Show/hide sections manually based on hash
 function showSection(sectionId) {
     const sections = document.querySelectorAll("section");
     sections.forEach(section => {
-      section.style.display = section.id === sectionId ? "block" : "none";
+        section.style.display = section.id === sectionId ? "block" : "none";
     });
-  }
+}
 
-  window.addEventListener("hashchange", function () {
+// Hide home when viewing blog/contact
+window.addEventListener("hashchange", function () {
     const hash = window.location.hash;
     const homeSection = document.getElementById("home");
 
-    if (hash === "#blog" || hash === "#contact" ) {
+    if (hash === "#blog" || hash === "#contact") {
         homeSection.style.display = "none";
     } else {
         homeSection.style.display = "block";
     }
 });
-
-if (hash === "#project" || hash === "#about me" ) {
-    homeSection.style.display = "none";
-} else {
-    homeSection.style.display = "block";
-}
